@@ -2,14 +2,69 @@
  *  Класс для связи с сервером.
  *  Содержит методы для отправки запросов на сервер и получения ответов
  * */
+
+import createRequest from "./api/createRequest.js";
+
 export default class TicketService {
-  list(callback) {}
+  constructor() {
+    this.baseUrl = 'http://localhost:7070';
+  }
 
-  get(id, callback) {}
+  list(callback) {
+    createRequest({
+      method: 'GET',
+      url: this.baseUrl,
+      data: { method: 'allTickets' },
+      callback
+    });
+  }
 
-  create(data, callback) {}
+  get(id, callback) {
+    createRequest({
+      method: 'GET',
+      url: this.baseUrl,
+      data: { method: 'ticketById', id },
+      callback
+    });
+  }
 
-  update(id, data, callback) {}
+  create(data, callback) {
+    createRequest({
+      method: 'POST',
+      url: this.baseUrl,
+      data: { 
+        method: 'createTicket', 
+        ...data 
+      },
+      callback
+    });
+  }
 
-  delete(id, callback) {}
+  update(id, data, callback) {
+    createRequest({
+      method: 'POST',
+      url: this.baseUrl,
+      data: { 
+        method: 'updateById',
+        id,
+        ...data 
+      },
+      callback
+    });
+  }
+
+  delete(id, callback) {
+    createRequest({
+      method: 'POST',
+      url: this.baseUrl,
+      data: { method: 'deleteById', id },
+      callback: (err) => {
+        if (err && err.message.includes('204')) {
+          callback(null, { success: true });
+        } else {
+          callback(err);
+        }
+      }
+    });
+  }
 }
