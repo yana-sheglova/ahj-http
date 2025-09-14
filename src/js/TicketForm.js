@@ -97,7 +97,7 @@ export default class TicketForm {
   }
 
   handleKeydown(e) {
-    if (e.key === 'Escape' && this.modal.style.display === 'block') {
+    if (e.key === 'Escape' && this.modal.classList.contains('show')) {
       this.hide();
     };
   }
@@ -140,12 +140,12 @@ export default class TicketForm {
     }
 
     this.fillForm(ticket);
-    this.style.display = 'block';
+    this.modal.classList.add('show');
   }
 
   hide() {
     if (this.modal) {
-      this.modal.style.display = 'none';
+      this.modal.classList.remove('show');
       this.form.reset();
       this.currentTicket = null;
     }

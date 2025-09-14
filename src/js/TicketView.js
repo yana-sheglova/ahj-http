@@ -41,8 +41,7 @@ export default class TicketView {
     header.append(status, name, date, editBtn, deleteBtn);
 
     const description = document.createElement('div');
-    description.classList.add('ticket-description');
-    description.style.display = 'none';
+    description.classList.add('ticket-description', 'hidden');
     description.textContent = ticket.description || '';
 
     ticketEl.append(header, description);
@@ -69,12 +68,12 @@ export default class TicketView {
 
   showDescription(ticketEl) {
     const descriptionEl = ticketEl.querySelector('.ticket-description');
-    descriptionEl.style.display = 'block';
+    descriptionEl.classList.remove('hidden');
   }
 
   hideDescription(ticketEl) {
     const descriptionEl = ticketEl.querySelector('.ticket-description');
-    descriptionEl.style.display = 'none';
+    descriptionEl.classList.add('hidden');
   }
 
   updateStatus(ticketEl, status) {

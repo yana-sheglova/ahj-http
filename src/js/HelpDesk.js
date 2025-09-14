@@ -144,7 +144,7 @@ export default class HelpDesk {
 
   toggleDescription(ticketEl) {
     const descriptionEl = ticketEl.querySelector('.ticket-description');
-    if (descriptionEl.style.display === 'none') {
+    if (descriptionEl.classList.contains('hidden')) {
       const ticketId = ticketEl.dataset.id;
       const ticket = this.tickets.find(t => t.id === ticketId);
 
