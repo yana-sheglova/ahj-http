@@ -47,6 +47,12 @@ let tickets = [
 
 app.use(async (request, response) => {
   const { method, id } = request.query;
+
+  // console.log('Method:', method);
+  // console.log('Query params:', request.query);
+  // console.log('Body:', request.body);
+  // console.log('URL:', request.url);
+
   switch (method) {
     case "allTickets":
       logger.info('All tickets has been called');
@@ -66,7 +72,10 @@ app.use(async (request, response) => {
     }
     case "createTicket": {
       try {
-        const createData = request.body;
+        // const createData = request.body;
+        const createData = request.query;
+        //console.log('Create data from query:', createData);
+
         const newTicket = {
           id: crypto.randomUUID(),
           name: createData.name,
@@ -74,6 +83,9 @@ app.use(async (request, response) => {
           description: createData.description || "",
           created: Date.now(),
         };
+
+        delete newTicket.method;
+
         tickets.push(newTicket);
         logger.info(`New ticket created: ${JSON.stringify(newTicket)}`);
         response.send(JSON.stringify(newTicket)).end();
@@ -99,18 +111,42 @@ app.use(async (request, response) => {
       break;
     }
     case "updateById": {
+      // const ticket = tickets.find((ticket) => ticket.id === id);
+      // // const updateData = request.body;
+      // const updateData = request.query; // ← ИЗМЕНИТЕ на request.query
+      // console.log('Update data from query:', updateData);
+
+      // if (ticket) {
+      //   Object.assign(ticket, updateData);
+      //   logger.info(`Ticket updated: ${JSON.stringify(ticket)}`);
+      //   response.send(JSON.stringify(tickets));
+      // } else {
+      //   logger.warn(`Ticket not found: ${id}`);
+      //   response
+      //     .status(404)
+      //     .send(JSON.stringify({ message: "Ticket not found" }))
+      //     .end();
+      // }
+      // break;
+
       const ticket = tickets.find((ticket) => ticket.id === id);
-      const updateData = request.body;
+      const updateData = request.query;
+      console.log('Update data from query:', updateData);
+      
       if (ticket) {
-        Object.assign(ticket, updateData);
+        // Обновляем только нужные поля
+        if (updateData.name !== undefined) ticket.name = updateData.name;
+        if (updateData.description !== undefined) ticket.description = updateData.description;
+        
+        if (updateData.status !== undefined) {
+          ticket.status = updateData.status === 'true';
+        }
+        
         logger.info(`Ticket updated: ${JSON.stringify(ticket)}`);
-        response.send(JSON.stringify(tickets));
+        response.send(JSON.stringify(ticket)).end();
       } else {
         logger.warn(`Ticket not found: ${id}`);
-        response
-          .status(404)
-          .send(JSON.stringify({ message: "Ticket not found" }))
-          .end();
+        response.status(404).send(JSON.stringify({ message: "Ticket not found" })).end();
       }
       break;
     }

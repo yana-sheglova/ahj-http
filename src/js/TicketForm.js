@@ -15,7 +15,7 @@ export default class TicketForm {
     this.modal.classList.add('modal');
 
     const modalContent = document.createElement('div');
-    this.modalContent.classList.add('modal-content');
+    modalContent.classList.add('modal-content');
 
     const title = document.createElement('h3');
     title.textContent = this.isEdit ? 'Редактировать тикет' : 'Добавить тикет';
@@ -38,10 +38,10 @@ export default class TicketForm {
 
     nameGroup.append(nameLabel, nameInput);
 
-    const descGroup = document.createElement('form');
+    const descGroup = document.createElement('div');
     descGroup.classList.add('form-group');
 
-    const descLabel = document.createElement('div');
+    const descLabel = document.createElement('label');
     descLabel.htmlFor = 'ticket-description';
     descLabel.textContent = 'Подробное описание:';
 
@@ -61,7 +61,7 @@ export default class TicketForm {
     cancelBtn.textContent = 'Отмена';
 
     const submitBtn = document.createElement('button');
-    submitBtn.type = 'button';
+    submitBtn.type = 'submit';
     submitBtn.classList.add('btn-submit');
     submitBtn.textContent = 'OK';
 
@@ -133,7 +133,7 @@ export default class TicketForm {
     this.isEdit = !!ticket;
     this.currentTicket = ticket;
 
-    if (!this.modal) {
+    if (!this.modal || !document.body.contains(this.modal)) {
       this.createModal();
     } else {
       this.updateModalTitle();
@@ -152,11 +152,17 @@ export default class TicketForm {
   }
 
   updateModalTitle() {
+    if (!this.modal) return;
+    
     const title = this.modal.querySelector('h3');
-    title.textContent = this.isEdit ? 'Редактировать тикет' : 'Добавить тикет';
+    if (title) {
+      title.textContent = this.isEdit ? 'Редактировать тикет' : 'Добавить тикет';
+    }
   }
 
   fillForm(ticket) {
+    if (!this.form) return;
+
     if (!ticket) {
       this.form.reset();
       return;
@@ -164,13 +170,5 @@ export default class TicketForm {
 
     this.form.querySelector('#ticket-name').value = ticket.name || '';
     this.form.querySelector('#ticket-description').value = ticket.description || '';
-  }
-
-  destroy() {
-    if (this.modal) {
-      document.removeEventListener('keydown', this.handleKeydown.bind(this));
-      this.modal.remove();
-      this.modal = null;
-    }
   }
 }

@@ -3,7 +3,7 @@ const createRequest = async (options = {}) => {
 
     try {
         let requestUrl = url;
-        if (method === 'GET' && data) {
+        if (data) {
             const params = new URLSearchParams(data);
             requestUrl += '?' + params.toString();
         }
@@ -15,10 +15,6 @@ const createRequest = async (options = {}) => {
             },
         };
 
-        if (method === 'POST' || method === 'PUT') {
-            fetchOptions.body = JSON.stringify(data);
-        }
-
         const response = await fetch(requestUrl, fetchOptions);
 
         if (!response.ok) {
@@ -26,6 +22,12 @@ const createRequest = async (options = {}) => {
         }
 
         let responseData = null;
+        if (response.status === 204) {
+            if (callback) {
+                callback(null, { success: true });
+            }
+            return; 
+        }
         const contentType = response.headers.get('content-type');
 
         if (contentType && contentType.includes('application/json')) {

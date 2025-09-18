@@ -31,12 +31,12 @@ export default class TicketView {
     date.textContent = this.formatDate(ticket.created);
 
     const editBtn = document.createElement('button');
-    editBtn.classList.add('ticket-edit');
+    editBtn.classList.add('ticket-edit'); 
     editBtn.textContent = '✎';
 
     const deleteBtn = document.createElement('button');
-    editBtn.classList.add('ticket-delete');
-    editBtn.textContent = '×';
+    deleteBtn.classList.add('ticket-delete');
+    deleteBtn.textContent = '×';
 
     header.append(status, name, date, editBtn, deleteBtn);
 
@@ -60,6 +60,7 @@ export default class TicketView {
       const ticketEl = this.createTicketElement(ticket);
       container.append(ticketEl);
     });
+
   }
 
   formatDate(time) {

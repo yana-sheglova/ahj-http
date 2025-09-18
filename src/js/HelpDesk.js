@@ -115,7 +115,7 @@ export default class HelpDesk {
       return;
     }
 
-    this.ticketService.delete(ticket.id, (err) => {
+    this.ticketService.delete(ticket.id, (err, result) => {
       if (err) {
         console.error('Ошибка при удалении тикета:', err);
         return;

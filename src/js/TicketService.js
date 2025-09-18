@@ -29,6 +29,8 @@ export default class TicketService {
   }
 
   create(data, callback) {
+    //console.log('Creating ticket with data:', data);
+    
     createRequest({
       method: 'POST',
       url: this.baseUrl,
@@ -41,13 +43,21 @@ export default class TicketService {
   }
 
   update(id, data, callback) {
+    //передаем только name, description, status
+    const updateData = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.status !== undefined) {
+      updateData.status = data.status.toString();
+    }
+    
     createRequest({
       method: 'POST',
       url: this.baseUrl,
       data: { 
         method: 'updateById',
         id,
-        ...data 
+        ...updateData
       },
       callback
     });
