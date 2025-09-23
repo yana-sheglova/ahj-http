@@ -8,6 +8,7 @@ export default class TicketForm {
     this.onSubmit = null;
     this.isEdit = false;
     this.currentTicket = null;
+    this.nameInput = null;
   }
 
   createModal() {
@@ -30,13 +31,13 @@ export default class TicketForm {
     nameLabel.htmlFor = 'ticket-name';
     nameLabel.textContent = 'Краткое описание:';
 
-    const nameInput = document.createElement('input');
-    nameInput.type = 'text';
-    nameInput.id = 'ticket-name';
-    nameInput.name = 'name';
-    nameInput.required = true;
+    this.nameInput = document.createElement('input');
+    this.nameInput.type = 'text';
+    this.nameInput.id = 'ticket-name';
+    this.nameInput.name = 'name';
+    this.nameInput.required = true;
 
-    nameGroup.append(nameLabel, nameInput);
+    nameGroup.append(nameLabel, this.nameInput);
 
     const descGroup = document.createElement('div');
     descGroup.classList.add('form-group');
@@ -141,6 +142,23 @@ export default class TicketForm {
 
     this.fillForm(ticket);
     this.modal.classList.add('show');
+
+    this.focusNameInput();
+  }
+
+  focusNameInput() {
+    setTimeout(() => {
+      if (this.nameInput) {
+        this.nameInput.focus();
+        this.nameInput.select();
+      } else if (this.form) {
+        const nameInput = this.form.querySelector('#ticket-name');
+        if (nameInput) {
+          nameInput.focus();
+          nameInput.select();
+        }
+      }
+    }, 300)
   }
 
   hide() {
