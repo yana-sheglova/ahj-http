@@ -4,6 +4,7 @@
 
 import TicketForm from './TicketForm.js';
 import TicketView from './TicketView.js';
+import ConfirmModal from './ConfirmModal.js';
 
 export default class HelpDesk {
   constructor(container, ticketService) {
@@ -14,7 +15,9 @@ export default class HelpDesk {
     this.ticketService = ticketService;
     this.ticketView = new TicketView();
     this.ticketForm = new TicketForm();
+    this.confirmModal = new ConfirmModal();
     this.tickets = [];
+    this.pendingDeleteTicket = null;
   }
 
   init() {
@@ -52,6 +55,11 @@ export default class HelpDesk {
       }
     };
 
+    this.confirmModal.setHandlers(
+      () => this.confirmDelete(), // onConfirm
+      () => this.cancelDelete()   // onCancel
+    );
+
     this.ticketsContainer.addEventListener('click', (e) => {
       const ticketEl = e.target.closest('.ticket');
       if (!ticketEl) return;
@@ -64,11 +72,37 @@ export default class HelpDesk {
       } else if (e.target.classList.contains('ticket-edit')) {
         this.ticketForm.show(ticket);
       } else if (e.target.classList.contains('ticket-delete')) {
-        this.deleteTicket(ticket);
+        this.showDeleteConfirmation(ticket);
       } else if (e.target.classList.contains('ticket-name')) {
         this.toggleDescription(ticketEl);
       }
     });
+  }
+
+  showDeleteConfirmation(ticket) {
+    this.pendingDeleteTicket = ticket;
+    this.confirmModal.show();
+  }
+
+  confirmDelete() {
+    if (!this.pendingDeleteTicket) return;
+
+    const ticket = this.pendingDeleteTicket;
+    this.pendingDeleteTicket = null;
+
+    this.ticketService.delete(ticket.id, (err, result) => {
+      if (err && !err.message.includes('JSON') && !err.message.includes('204')) {
+        console.error('Ошибка при удалении тикета:', err);
+        return;
+      }
+
+      this.tickets = this.tickets.filter(t => t.id !== ticket.id);
+      this.ticketView.renderTickets(this.ticketsContainer, this.tickets);
+    });
+  }
+
+  cancelDelete() {
+    this.pendingDeleteTicket = null;
   }
 
   loadTickets() {

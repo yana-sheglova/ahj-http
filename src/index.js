@@ -1,4 +1,3 @@
 // Сюда импортируются файлы приложения
 import './js/app';
-
-import './style.css';
+import './css/style.css';
