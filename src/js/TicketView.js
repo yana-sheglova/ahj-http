@@ -31,7 +31,7 @@ export default class TicketView {
     date.textContent = this.formatDate(ticket.created);
 
     const editBtn = document.createElement('button');
-    editBtn.classList.add('ticket-edit'); 
+    editBtn.classList.add('ticket-edit');
     editBtn.textContent = '✎';
 
     const deleteBtn = document.createElement('button');
@@ -56,11 +56,10 @@ export default class TicketView {
   renderTickets(container, tickets) {
     container.replaceChildren();
 
-    tickets.forEach(ticket => {
+    tickets.forEach((ticket) => {
       const ticketEl = this.createTicketElement(ticket);
       container.append(ticketEl);
     });
-
   }
 
   formatDate(time) {

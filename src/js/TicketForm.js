@@ -100,7 +100,7 @@ export default class TicketForm {
   handleKeydown(e) {
     if (e.key === 'Escape' && this.modal.classList.contains('show')) {
       this.hide();
-    };
+    }
   }
 
   handleSubmit() {
@@ -108,18 +108,19 @@ export default class TicketForm {
 
     let data;
 
-    if (this.isEdit && this.currentTicket) { // Редактирование существующего тикета
+    if (this.isEdit && this.currentTicket) {
+      // Редактирование существующего тикета
       data = {
         id: this.currentTicket.id,
         name: formData.get('name'),
         description: formData.get('description'),
-        status: this.currentTicket.status
+        status: this.currentTicket.status,
       };
     } else {
       data = {
         name: formData.get('name'),
         description: formData.get('description'),
-        status: false
+        status: false,
       };
     }
 
@@ -158,7 +159,7 @@ export default class TicketForm {
           nameInput.select();
         }
       }
-    }, 300)
+    }, 300);
   }
 
   hide() {
@@ -171,7 +172,7 @@ export default class TicketForm {
 
   updateModalTitle() {
     if (!this.modal) return;
-    
+
     const title = this.modal.querySelector('h3');
     if (title) {
       title.textContent = this.isEdit ? 'Редактировать тикет' : 'Добавить тикет';

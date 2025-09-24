@@ -2,9 +2,9 @@
  *  Основной класс приложения
  * */
 
-import TicketForm from './TicketForm.js';
-import TicketView from './TicketView.js';
-import ConfirmModal from './ConfirmModal.js';
+import TicketForm from './TicketForm';
+import TicketView from './TicketView';
+import ConfirmModal from './ConfirmModal';
 
 export default class HelpDesk {
   constructor(container, ticketService) {
@@ -57,7 +57,7 @@ export default class HelpDesk {
 
     this.confirmModal.setHandlers(
       () => this.confirmDelete(), // onConfirm
-      () => this.cancelDelete()   // onCancel
+      () => this.cancelDelete(), // onCancel
     );
 
     this.ticketsContainer.addEventListener('click', (e) => {
@@ -65,7 +65,7 @@ export default class HelpDesk {
       if (!ticketEl) return;
 
       const ticketId = ticketEl.dataset.id;
-      const ticket = this.tickets.find(t => t.id === ticketId);
+      const ticket = this.tickets.find((t) => t.id === ticketId);
 
       if (e.target.classList.contains('ticket-status')) {
         this.toggleTicketStatus(ticket);
@@ -90,13 +90,13 @@ export default class HelpDesk {
     const ticket = this.pendingDeleteTicket;
     this.pendingDeleteTicket = null;
 
-    this.ticketService.delete(ticket.id, (err, result) => {
+    this.ticketService.delete(ticket.id, (err) => {
       if (err && !err.message.includes('JSON') && !err.message.includes('204')) {
         console.error('Ошибка при удалении тикета:', err);
         return;
       }
 
-      this.tickets = this.tickets.filter(t => t.id !== ticket.id);
+      this.tickets = this.tickets.filter((t) => t.id !== ticket.id);
       this.ticketView.renderTickets(this.ticketsContainer, this.tickets);
     });
   }
@@ -130,13 +130,13 @@ export default class HelpDesk {
   }
 
   updateTicket(data) {
-    this.ticketService.update(data.id, data, (err, updatedTicket) => {
+    this.ticketService.update(data.id, data, (err) => {
       if (err) {
         console.error('Ошибка при обновлении тикета:', err);
         return;
       }
 
-      const index = this.tickets.findIndex(t => t.id === data.id);
+      const index = this.tickets.findIndex((t) => t.id === data.id);
       if (index !== -1) {
         this.tickets[index] = { ...this.tickets[index], ...data };
         this.ticketView.renderTickets(this.ticketsContainer, this.tickets);
@@ -145,17 +145,13 @@ export default class HelpDesk {
   }
 
   deleteTicket(ticket) {
-    if (!confirm('Вы уверены, что хотите удалить этот тикет?')) {
-      return;
-    }
-
-    this.ticketService.delete(ticket.id, (err, result) => {
+    this.ticketService.delete(ticket.id, (err) => {
       if (err) {
         console.error('Ошибка при удалении тикета:', err);
         return;
       }
-      
-      this.tickets = this.tickets.filter(t => t.id !== ticket.id);
+
+      this.tickets = this.tickets.filter((t) => t.id !== ticket.id);
       this.ticketView.renderTickets(this.ticketsContainer, this.tickets);
     });
   }
@@ -180,7 +176,7 @@ export default class HelpDesk {
     const descriptionEl = ticketEl.querySelector('.ticket-description');
     if (descriptionEl.classList.contains('hidden')) {
       const ticketId = ticketEl.dataset.id;
-      const ticket = this.tickets.find(t => t.id === ticketId);
+      const ticket = this.tickets.find((t) => t.id === ticketId);
 
       if (ticket && !ticket.description) {
         this.ticketService.get(ticketId, (err, fullTicket) => {
